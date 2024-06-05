@@ -27,7 +27,7 @@ const Gameboard = (function () {
     const getBoard = () => board;
 
     const drawSymbol = (row, column, symbol) => {
-        const isAvailable = board[row][column] === ' ' ? true : false;
+        const isAvailable = board[row][column].getSymbol() === '·' ? true : false;
         if (!isAvailable) {
             return false;
         }
@@ -35,7 +35,7 @@ const Gameboard = (function () {
     }
 
     const printBoard = () => {
-        const boardWithValues = board.map((row) => row.map((cell) => cell.getSymbol()));
+        const boardWithValues = board.map((row) => row.map((cell) => cell.getSymbol()).join(' ')).join('\n');
         console.log(boardWithValues);
     };
     return {
