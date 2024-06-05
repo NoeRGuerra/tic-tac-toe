@@ -77,7 +77,50 @@ const GameController = (playerOneName = "Player One", playerTwoName = "Player Tw
 
     const playRound = (row, column) => {
         board.drawSymbol(row, column, getActivePlayer().getSymbol());
-        
+        transpose = m => m[0].map((x,i) => m.map(x => x[i]))
+
+        const checkRows = () => {
+            let symbolsInARow = 0;
+            for (let row of board){
+                for (let cell of row){
+                    if (cell.getSymbol() == getActivePlayer.getSymbol())
+                        symbolsInARow += 1;
+                    else
+                        symbolsInARow = 0;
+                }
+                if (symbolsInARow === 3)
+                    return true;
+                return false;
+            }
+        }
+
+
+        const checkColumns = () => {
+            // Transpose, then call checkRows on it
+            return checkRows(transpose(board.getBoard()));
+        }
+
+        const checkDiagonals = () => {
+            let diagonal = [];
+            let currentBoard = board.getBoard();
+            let winningArray = Array.from({ length: 3 }, () => getActivePlayer().getSymbol());
+
+            // Check diagonal
+            for (let i = 0; i<currentBoard.length; i++){
+                diagonal.push(currentBoard[i][i]);
+            }
+            if (diagonal === winningArray)
+                return true
+
+            // Check reverse diagonal
+            diagonal = [];
+            for (let i = 2; i>=0; i--){
+                diagonal.push(currentBoard[i][i]);
+            }
+        }
+
+
+
         switchActivePlayer();
         printNewBoard();
     };
