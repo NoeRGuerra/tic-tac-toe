@@ -1,3 +1,18 @@
+const Cell = () => {
+    let value = '·';
+
+    const addSymbol = (symbol) => {
+        value = symbol;
+    }
+
+    const getSymbol = () => value;
+
+    return {
+        addSymbol,
+        getSymbol
+    };
+}
+
 const Gameboard = (function () {
     const board = [];
 
@@ -30,29 +45,16 @@ const Gameboard = (function () {
     };
 })();
 
-const Cell = () => {
-    let value = '·';
-
-    const addSymbol = (symbol) => {
-        value = symbol;
-    }
-
-    const getSymbol = () => value;
-
-    return {
-        addSymbol,
-        getSymbol
-    };
-}
-
 const Player = () => {
     let name = "";
     let symbol = "";
+    const getName = () => name;
     const setName = (playerName) => name = playerName;
     const setSymbol = (playerSymbol) => symbol = playerSymbol;
     const getSymbol = () => symbol;
 
     return {
+        getName,
         setName,
         setSymbol,
         getSymbol,
@@ -60,6 +62,7 @@ const Player = () => {
 }
 
 const GameController = (playerOneName = "Player One", playerTwoName = "Player Two") => {
+    const board = Gameboard;
     const players = [Player(), Player()];
     players[0].setName(playerOneName);
     players[0].setSymbol("X");
@@ -72,18 +75,18 @@ const GameController = (playerOneName = "Player One", playerTwoName = "Player Tw
     
     const printNewBoard = () => {
         board.printBoard();
-        console.log(`${getActivePlayer().name}'s turn`);
+        console.log(`${getActivePlayer().getName()}'s turn`);
     }
 
     const playRound = (row, column) => {
         board.drawSymbol(row, column, getActivePlayer().getSymbol());
+        
         transpose = m => m[0].map((x,i) => m.map(x => x[i]))
-
         const checkRows = () => {
             let symbolsInARow = 0;
-            for (let row of board){
+            for (let row of board.getBoard()){
                 for (let cell of row){
-                    if (cell.getSymbol() == getActivePlayer.getSymbol())
+                    if (cell.getSymbol() == getActivePlayer().getSymbol())
                         symbolsInARow += 1;
                     else
                         symbolsInARow = 0;
@@ -93,7 +96,6 @@ const GameController = (playerOneName = "Player One", playerTwoName = "Player Tw
                 return false;
             }
         }
-
 
         const checkColumns = () => {
             // Transpose, then call checkRows on it
@@ -110,16 +112,24 @@ const GameController = (playerOneName = "Player One", playerTwoName = "Player Tw
                 diagonal.push(currentBoard[i][i]);
             }
             if (diagonal === winningArray)
-                return true
+                return true;
 
             // Check reverse diagonal
             diagonal = [];
             for (let i = 2; i>=0; i--){
                 diagonal.push(currentBoard[i][i]);
             }
+            if (diagonal === winningArray)
+                return true;
+
+            return false;
         }
 
-
+        if (checkRows() || checkColumns() || checkDiagonals()){
+            console.log(`${checkRows()} || ${checkColumns()} || ${checkDiagonals()}`);
+            console.log(`${getActivePlayer().getName()} is the winner!`);
+            return true;
+        }
 
         switchActivePlayer();
         printNewBoard();
@@ -132,3 +142,8 @@ const GameController = (playerOneName = "Player One", playerTwoName = "Player Tw
 }
 
 const game = GameController();
+game.playRound(0, 0);
+game.playRound(1, 0);
+game.playRound(0, 1);
+game.playRound(1, 1);
+game.playRound(0, 2);
