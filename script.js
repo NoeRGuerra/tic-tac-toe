@@ -38,10 +38,22 @@ const Gameboard = (function () {
         const boardWithValues = board.map((row) => row.map((cell) => cell.getSymbol()).join(' ')).join('\n');
         console.log(boardWithValues);
     };
+
+    const isFull = () => {
+        for (let row of board){
+            for (let cell of row){
+                if (cell.getSymbol() == '·')
+                    return false;
+            }
+        }
+        return true;
+    }
+
     return {
         getBoard,
         drawSymbol,
-        printBoard
+        printBoard,
+        isFull,
     };
 })();
 
@@ -133,9 +145,13 @@ const GameController = (playerOneName = "Player One", playerTwoName = "Player Tw
             board.printBoard();
             return true;
         }
-
+        
         switchActivePlayer();
         printNewBoard();
+        if (board.isFull()){
+            console.log("Game is tied!");
+            return true;
+        }
     };
 
     return {
