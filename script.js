@@ -72,7 +72,7 @@ const GameController = (playerOneName = "Player One", playerTwoName = "Player Tw
     let activePlayer = players[0];
     const switchActivePlayer = () => activePlayer = activePlayer === players[0] ? players[1] : players[0];
     const getActivePlayer = () => activePlayer;
-    
+
     const printNewBoard = () => {
         board.printBoard();
         console.log(`${getActivePlayer().getName()}'s turn`);
@@ -80,8 +80,8 @@ const GameController = (playerOneName = "Player One", playerTwoName = "Player Tw
 
     const playRound = (row, column) => {
         board.drawSymbol(row, column, getActivePlayer().getSymbol());
-        
-        transposed = m => m[0].map((x,i) => m.map(x => x[i]));
+
+        transposed = m => m[0].map((x, i) => m.map(x => x[i]));
         const checkRows = (column) => {
             let rows;
             if (column)
@@ -89,11 +89,11 @@ const GameController = (playerOneName = "Player One", playerTwoName = "Player Tw
             else
                 rows = board.getBoard();
             let symbolsInARow = 0;
-            for (let row of rows){
-                for (let cell of row){
+            for (let row of rows) {
+                for (let cell of row) {
                     if (cell.getSymbol() == getActivePlayer().getSymbol())
                         symbolsInARow += 1;
-                    else{
+                    else {
                         symbolsInARow = 0;
                         break;
                     }
@@ -112,15 +112,15 @@ const GameController = (playerOneName = "Player One", playerTwoName = "Player Tw
             let winningArray = Array.from({ length: 3 }, () => getActivePlayer().getSymbol());
 
             // Check diagonal
-            for (let i = 0; i<currentBoard.length; i++){
+            for (let i = 0; i < currentBoard.length; i++) {
                 diagonal.push(currentBoard[i][i].getSymbol());
             }
             if (diagonal.length === winningArray.length && diagonal.every((value, index) => value === winningArray[index]))
                 return true;
             // Check reverse diagonal
             diagonal = [];
-            for (let i = 0; i<currentBoard.length; i++){
-                diagonal.push(currentBoard[(i-(currentBoard.length-1))*-1][i].getSymbol());
+            for (let i = 0; i < currentBoard.length; i++) {
+                diagonal.push(currentBoard[(i - (currentBoard.length - 1)) * -1][i].getSymbol());
             }
             if (diagonal.length === winningArray.length && diagonal.every((value, index) => value === winningArray[index]))
                 return true;
@@ -128,7 +128,7 @@ const GameController = (playerOneName = "Player One", playerTwoName = "Player Tw
             return false;
         }
 
-        if (checkRows() || checkColumns() || checkDiagonals()){
+        if (checkRows() || checkColumns() || checkDiagonals()) {
             console.log(`${getActivePlayer().getName()} is the winner!`);
             board.printBoard();
             return true;
