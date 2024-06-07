@@ -40,8 +40,8 @@ const Gameboard = (function () {
     };
 
     const isFull = () => {
-        for (let row of board){
-            for (let cell of row){
+        for (let row of board) {
+            for (let cell of row) {
                 if (cell.getSymbol() == '·')
                     return false;
             }
@@ -145,10 +145,10 @@ const GameController = (playerOneName = "Player One", playerTwoName = "Player Tw
             board.printBoard();
             return true;
         }
-        
+
         switchActivePlayer();
         printNewBoard();
-        if (board.isFull()){
+        if (board.isFull()) {
             console.log("Game is tied!");
             return true;
         }
@@ -157,7 +157,48 @@ const GameController = (playerOneName = "Player One", playerTwoName = "Player Tw
     return {
         playRound,
         getActivePlayer,
+        getBoard: board.getBoard,
     };
 }
 
-const game = GameController();
+const ScreenController = () => {
+    const game = GameController();
+    const playerTurnDiv = document.querySelector(".turn");
+    const boardDiv = document.querySelector(".board");
+
+    const updateScreen = () => {
+        boardDiv.textContent = "";
+        const board = game.getBoard();
+        const activePlayer = game.getActivePlayer();
+        playerTurnDiv.textContent = `${activePlayer.name}'s turn`;
+
+        for (let row of board) {
+            let rowIndex = board.indexOf(row);
+            for (let cell of row) {
+                let colIndex = row.indexOf(cell);
+                const cellButton = document.createElement("button");
+                cellButton.classList.add("cell");
+                cellButton.dataset.row = rowIndex;
+                cellButton.dataset.column = colIndex;
+                cellButton.textContent = cell.getSymbol();
+                boardDiv.appendChild(cellButton);
+            }
+        }
+    }
+
+    const clickHandlerBoard = (e) => {
+        const selectedColumn = e.target.dataset.column;
+        const selectedRow = e.target.dataset.row;
+
+        if (!selectedColumn || !selectedRow)
+            return;
+
+        game.playRound(selectedRow, selectedColumn);
+        updateScreen();
+    }
+    boardDiv.addEventListener("click", clickHandlerBoard);
+
+    updateScreen();
+}
+
+ScreenController();
