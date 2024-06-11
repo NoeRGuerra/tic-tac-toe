@@ -157,6 +157,7 @@ const GameController = (playerOneName = "Player One", playerTwoName = "Player Tw
     return {
         playRound,
         getActivePlayer,
+        isFull: board.isFull,
         getBoard: board.getBoard,
     };
 }
@@ -165,12 +166,12 @@ const ScreenController = () => {
     const game = GameController();
     const playerTurnDiv = document.querySelector(".turn");
     const boardDiv = document.querySelector(".board");
+    const activePlayer = game.getActivePlayer();
 
     const updateScreen = () => {
         boardDiv.textContent = "";
         const board = game.getBoard();
-        const activePlayer = game.getActivePlayer();
-        playerTurnDiv.textContent = `${activePlayer.name}'s turn`;
+        playerTurnDiv.textContent = `${activePlayer.getName()}'s turn`;
 
         for (let row of board) {
             let rowIndex = board.indexOf(row);
@@ -193,8 +194,14 @@ const ScreenController = () => {
         if (!selectedColumn || !selectedRow)
             return;
 
-        game.playRound(selectedRow, selectedColumn);
+        let result = game.playRound(selectedRow, selectedColumn);
         updateScreen();
+        if (game.isFull() && !result){
+            playerTurnDiv.textContent = `It's a tie!`;
+        }
+        else if (result){
+            playerTurnDiv.textContent = `${activePlayer.getName()} is the winner!`;
+        }
     }
     boardDiv.addEventListener("click", clickHandlerBoard);
 
